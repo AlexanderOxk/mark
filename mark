@@ -1,0 +1,31 @@
+#!/bin/bash
+
+PY_PATH='/usr/bin/python3.9'
+CORE_PATH='/home/oxklint/dev/mark/core.py'
+
+if [ $# -lt 1 ] || [ $# -gt 2 ] || ( [ $1 == "-h" ] && [ $# -eq 1 ] ) || ( [ $1 != "set" ] && [ $# -eq 2 ] )
+then
+    echo ""
+    echo "Usage: mark [set] <alias>  OR  mark clear"
+    echo ""
+    echo "When setting, CWD is stored with the alias."
+    echo "When not setting, CWD is set to the path stored under the alias."
+    echo ""
+    echo "Writing to an existing alias overwrites it."
+    echo "Clearing removes all existing aliases from $HOME/.cache/mark/marks"
+    echo ""
+elif [ $# -eq 1 ] && [ $1 != "clear" ]
+then #loading
+    path=$($PY_PATH $CORE_PATH -l $1)
+    if [ $path == "-1" ]
+    then
+        echo "Alias '$1' not found."
+    else
+        cd $path
+    fi
+elif [ $1 == "clear" ]
+then #clear
+    echo $($PY_PATH $CORE_PATH -c)
+else #store
+    echo $($PY_PATH $CORE_PATH -s)
+fi
